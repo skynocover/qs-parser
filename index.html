@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <header
+    class="bg-cover border-t-2 border-blue-600 h-screen"
+    style="
+      background-image: url('https://ik.imagekit.io/q5edmtudmz/peter-lloyd-680526-unsplash_TYZn4kayG.jpg');
+    "
+  >
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.8.3/qs.min.js"></script>
+    <script>
+      function calc() {
+        const input = document.getElementById('input').value;
+        document.getElementById('output').innerText = JSON.stringify(Qs.parse(input));
+      }
+
+      function sort() {
+        const input = document.getElementById('input').value;
+        const qs = Qs.parse(input);
+        const sort = qs['sort'];
+        if (!sort) {
+          document.getElementById('input').value += (!!input ? '&' : '') + 'sort=createdAt:desc';
+        } else if (Array.isArray(sort)) {
+          document.getElementById('input').value += `&sort[${sort.length}]=createdAt:desc`;
+        } else {
+          document.getElementById('input').value =
+            input.replace('sort', 'sort[0]') + `&sort[1]=createdAt:desc`;
+        }
+        calc();
+      }
+
+      function filters() {
+        const input = document.getElementById('input').value;
+        document.getElementById('input').value +=
+          (!!input ? '&' : '') + 'filters[description][$contains]=Test';
+        calc();
+      }
+
+      function populate() {
+        const input = document.getElementById('input').value;
+        const qs = Qs.parse(input);
+        const populate = qs['populate'];
+        if (!populate) {
+          document.getElementById('input').value += (!!input ? '&' : '') + 'populate=*';
+        } else if (Array.isArray(populate)) {
+          document.getElementById('input').value += `&populate[${populate.length}]=room`;
+        } else {
+          document.getElementById('input').value =
+            input.replace('populate', 'populate[0]').replace('*', 'room') + `&populate[1]=room`;
+        }
+        calc();
+      }
+
+      function fields() {
+        const input = document.getElementById('input').value;
+        const qs = Qs.parse(input);
+        const fields = qs['fields'];
+        if (!fields) {
+          document.getElementById('input').value += (!!input ? '&' : '') + 'fields=user';
+        } else if (Array.isArray(fields)) {
+          document.getElementById('input').value += `&fields[${fields.length}]=user`;
+        } else {
+          document.getElementById('input').value =
+            input.replace('fields', 'fields[0]') + `&fields[1]=user`;
+        }
+        calc();
+      }
+
+      function pagination() {
+        const input = document.getElementById('input').value;
+        const qs = Qs.parse(input);
+        const pagination = qs['pagination'];
+        if (!pagination) {
+          document.getElementById('input').value +=
+            (!!input ? '&' : '') +
+            'pagination[page]=1&pagination[pageSize]=10&pagination[withCount]=true';
+        } else {
+          if (!pagination.page) {
+            document.getElementById('input').value += '&pagination[page]=1';
+          }
+          if (!pagination.pageSize) {
+            document.getElementById('input').value += '&pagination[pageSize]=10';
+          }
+          if (!pagination.withCount) {
+            document.getElementById('input').value += '&pagination[withCount]=true';
+          }
+        }
+
+        calc();
+      }
+
+      function public() {
+        document.getElementById('input').value += (!!input ? '&' : '') + 'publicationState=preview';
+        calc();
+      }
+
+      function locale() {}
+    </script>
+    <div class="content px-8 py-2">
+      <nav class="flex items-center justify-between">
+        <h2 class="text-gray-200 font-bold text-2xl">QS tester</h2>
+      </nav>
+      <div class="body mt-20 mx-8">
+        <div class="md:flex items-center justify-between">
+          <div class="w-full md:w-1/2 mr-auto" style="text-shadow: 0 20px 50px hsla(0, 0%, 0%, 8)">
+            <h1 class="text-4xl font-bold text-white tracking-wide">Parse Result</h1>
+            <p class="text-gray-300" id="output"></p>
+          </div>
+          <div class="w-full md:max-w-md mt-6">
+            <div class="card bg-white shadow-md rounded-lg px-4 py-4 mb-6">
+              <form>
+                <div class="flex items-center justify-center">
+                  <h2 class="text-2xl font-bold tracking-wide">Hello World</h2>
+                </div>
+                <h2 class="text-xl text-center font-semibold text-gray-800 mb-2">
+                  Input the origin string
+                </h2>
+                <input
+                  type="text"
+                  id="input"
+                  value=""
+                  class="rounded px-4 w-full py-1 bg-gray-200 border border-gray-400 mb-6 text-gray-700 placeholder-gray-700 focus:bg-white focus:outline-none"
+                />
+                <div class="flex items-center justify-between">
+                  <button class="bg-gray-800 text-gray-200 px-2 py-1 rounded" onclick="calc()">
+                    Parse
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white px-6 py-4 my-3 w-3/4 mx-auto shadow rounded-md flex items-center">
+      <div class="w-full text-center mx-auto">
+        <button
+          type="button"
+          class="border border-indigo-500 text-indigo-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-indigo-600 focus:outline-none focus:shadow-outline"
+          onclick="sort()"
+        >
+          Sort
+        </button>
+        <button
+          type="button"
+          class="border border-green-500 text-green-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          onclick="filters()"
+        >
+          Filters
+        </button>
+        <button
+          type="button"
+          class="border border-red-500 text-red-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-red-600 focus:outline-none focus:shadow-outline"
+          onclick="populate()"
+        >
+          Populate
+        </button>
+        <button
+          type="button"
+          class="border border-yellow-500 text-yellow-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-yellow-600 focus:outline-none focus:shadow-outline"
+          onclick="fields()"
+        >
+          fields
+        </button>
+        <button
+          type="button"
+          class="border border-teal-500 text-teal-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-teal-600 focus:outline-none focus:shadow-outline"
+          onclick="pagination()"
+        >
+          Pagination
+        </button>
+        <button
+          type="button"
+          class="border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline"
+          onclick="public()"
+        >
+          PublicationState
+        </button>
+        <!-- <button
+          type="button"
+          class="border border-gray-300 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-300 focus:outline-none focus:shadow-outline"
+          onclick="locale()"
+        >
+          Locale
+        </button> -->
+      </div>
+    </div>
+  </header>
+</html>
